@@ -1,5 +1,5 @@
 import type { DatabaseManagerInstance, LoggerService, ManagerConfig } from '@tazama-lf/frms-coe-lib';
-  import type { Case, RuleConfig, RuleRequest, RuleResult } from '@tazama-lf/frms-coe-lib/lib/interfaces';
+  import type { Case, OutcomeResult, RuleConfig, RuleRequest, RuleResult } from '@tazama-lf/frms-coe-lib/lib/interfaces';
 import type { SupportedTransactionMessage } from '@tazama-lf/frms-coe-lib/lib/interfaces';
 import type { BaseMessage } from '@tazama-lf/frms-coe-lib/lib/interfaces';
 
@@ -25,8 +25,16 @@ export async function handleTransaction(
     throw new Error('Invalid config provided - tolerance parameter not provided or invalid type');
   }
 
-const cnic = transaction.Payload.cnic as unknown as number;
+  const cnic = "transaction.Payload.cnic";
 
-  return determineOutcome(cnic, ruleConfig, ruleRes);
+  // Define parameterized query
+  const query = `SELECT * FROM public."DEFAULT_cases_cnic" WHERE data -> 'data' ->> 'CNIC' = $1`;
+
+  // Execute query with parameters
+  const data = await databaseManager.enrichment.query<{ [key: string]: unknown }>(query, [
+    cnic
+  ]);
+
+  return determineOutcome(data.row.length, ruleConfig, ruleRes);
   
 }
