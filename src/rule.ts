@@ -25,16 +25,18 @@ export async function handleTransaction(
     throw new Error('Invalid config provided - tolerance parameter not provided or invalid type');
   }
 
-  const cnic = "transaction.Payload.cnic";
+  const cnic = transaction.Payload.cnic as unknown as string;
 
   // Define parameterized query
   const query = `SELECT * FROM public."DEFAULT_cases_cnic" WHERE data -> 'data' ->> 'CNIC' = $1`;
 
   // Execute query with parameters
-  const data = await databaseManager.enrichment.query<{ [key: string]: unknown }>(query, [
+  const data = await databaseManager._enrichment.query<{ [key: string]: unknown }>(query, [
     cnic
   ]);
 
-  return determineOutcome(data.row.length, ruleConfig, ruleRes);
+console.log('Query result', data);
+
+  return determineOutcome(data.rows.length, ruleConfig, ruleRes);
   
 }
