@@ -3,7 +3,7 @@ import type { DatabaseManagerInstance, LoggerService, ManagerConfig } from '@taz
 import type { SupportedTransactionMessage } from '@tazama-lf/frms-coe-lib/lib/interfaces';
 import type { BaseMessage } from '@tazama-lf/frms-coe-lib/lib/interfaces';
 
-export type RuleExecutorConfig = Required<Pick<ManagerConfig, 'rawHistory' | 'eventHistory' | 'configuration' | 'localCacheConfig'>>;
+export type RuleExecutorConfig = Required<Pick<ManagerConfig, 'rawHistory' | 'eventHistory' | 'configuration' | 'enrichment' | 'localCacheConfig'>>;
 
 export async function handleTransaction(
   req: RuleRequest<SupportedTransactionMessage>,
